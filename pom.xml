@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.nttdata.bootcamp</groupId>
-	<artifactId>bootcamp-payment</artifactId>
+	<artifactId>payment</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>bootcamp-payment</name>
+	<name>payment</name>
 	<description>Microservicios</description>
 	<properties>
 		<java.version>11</java.version>
