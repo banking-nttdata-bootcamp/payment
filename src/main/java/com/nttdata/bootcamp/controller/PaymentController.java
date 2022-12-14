@@ -1,6 +1,7 @@
 package com.nttdata.bootcamp.controller;
 
 import com.nttdata.bootcamp.entity.Payment;
+import com.nttdata.bootcamp.entity.dto.PaymentDto;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import com.nttdata.bootcamp.util.Constant;
 import java.util.Date;
 import javax.validation.Valid;
 
@@ -50,16 +52,21 @@ public class PaymentController {
 	//Save deposit
 	@CircuitBreaker(name = "payments", fallbackMethod = "fallBackGetPayments")
 	@PostMapping(value = "/savePayment")
-	public Mono<Payment> savePayment(@RequestBody Payment dataPayment){
-		Mono.just(dataPayment).doOnNext(t -> {
-					t.setTypeAccount("active");
+	public Mono<Payment> savePayment(@RequestBody PaymentDto dataPayment){
+		Payment payment= new Payment();
+		Mono.just(payment).doOnNext(t -> {
+					t.setDni(dataPayment.getDni());
+					t.setAccountNumber(dataPayment.getAccountNumber());
+					t.setTypeAccount(Constant.TYPE_ACCOUNT);
+					t.setAmount(dataPayment.getAmount());
+					t.setCommission(0.00);
 					t.setCreationDate(new Date());
 					t.setModificationDate(new Date());
 
-				}).onErrorReturn(dataPayment).onErrorResume(e -> Mono.just(dataPayment))
+				}).onErrorReturn(payment).onErrorResume(e -> Mono.just(payment))
 				.onErrorMap(f -> new InterruptedException(f.getMessage())).subscribe(x -> LOGGER.info(x.toString()));
 
-		Mono<Payment> depositMono = paymentService.savePayment(dataPayment);
+		Mono<Payment> depositMono = paymentService.savePayment(payment);
 		return depositMono;
 	}
 
