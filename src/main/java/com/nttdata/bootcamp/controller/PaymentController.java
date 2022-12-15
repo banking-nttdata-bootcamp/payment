@@ -16,6 +16,7 @@ import com.nttdata.bootcamp.util.Constant;
 import java.util.Date;
 import javax.validation.Valid;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/payment")
 public class PaymentController {
