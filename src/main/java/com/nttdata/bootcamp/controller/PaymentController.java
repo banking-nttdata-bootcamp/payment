@@ -58,6 +58,7 @@ public class PaymentController {
 		Mono.just(payment).doOnNext(t -> {
 					t.setDni(dataPayment.getDni());
 					t.setAccountNumber(dataPayment.getAccountNumber());
+					t.setPaymentNumber(dataPayment.getPaymentNumber());
 					t.setTypeAccount(Constant.TYPE_ACCOUNT);
 					t.setAmount(dataPayment.getAmount());
 					t.setCommission(0.00);
