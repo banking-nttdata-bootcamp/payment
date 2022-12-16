@@ -1,8 +1,11 @@
-package com.nttdata.bootcamp.service;
+package com.nttdata.bootcamp.service.impl;
 
 import com.nttdata.bootcamp.entity.Payment;
 import com.nttdata.bootcamp.repository.PaymentRepository;
+import com.nttdata.bootcamp.service.KafkaService;
+import com.nttdata.bootcamp.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.PayloadApplicationEvent;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -12,6 +15,9 @@ import reactor.core.publisher.Mono;
 public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
+
+    @Autowired
+    private KafkaService kafkaService;
 
     @Override
     public Flux<Payment> findAll() {
@@ -40,7 +46,7 @@ public class PaymentServiceImpl implements PaymentService {
     public Mono<Payment> savePayment(Payment dataPayment) {
         Mono<Payment> paymentMono = findByNumber(dataPayment.getPaymentNumber())
                 .flatMap(__ -> Mono.<Payment>error(new Error("This payment number " + dataPayment.getPaymentNumber() + "exists")))
-                .switchIfEmpty(paymentRepository.save(dataPayment));
+                .switchIfEmpty(saveTopic(dataPayment));
         return paymentMono;
 
 
@@ -71,6 +77,12 @@ public class PaymentServiceImpl implements PaymentService {
             return Mono.<Void>error(new Error("This payment whith number" + Number+ " do not exists"));
         }
     }
+    public Mono<Payment> saveTopic(Payment dataPayment){
+        Mono<Payment> monPayment = paymentRepository.save(dataPayment);
+        this.kafkaService.publish(monPayment.block());
+        return monPayment;
+    }
+
 
 
 
