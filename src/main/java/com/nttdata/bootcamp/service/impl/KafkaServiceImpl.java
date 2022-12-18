@@ -2,7 +2,7 @@ package com.nttdata.bootcamp.service.impl;
 
 import com.nttdata.bootcamp.entity.Payment;
 import com.nttdata.bootcamp.entity.enums.EventType;
-import com.nttdata.bootcamp.events.CreatedEventKafka;
+import com.nttdata.bootcamp.events.PaymentCreatedEventKafka;
 import com.nttdata.bootcamp.events.EventKafka;
 import com.nttdata.bootcamp.service.KafkaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class KafkaServiceImpl implements KafkaService {
 
     public void publish(Payment payment) {
 
-        CreatedEventKafka created = new CreatedEventKafka();
+        PaymentCreatedEventKafka created = new PaymentCreatedEventKafka();
         created.setData(payment);
         created.setId(UUID.randomUUID().toString());
         created.setType(EventType.CREATED);

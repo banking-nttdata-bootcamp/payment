@@ -74,7 +74,7 @@ public class PaymentServiceImpl implements PaymentService {
             return paymentRepository.delete(payment);
         }
         catch (Exception e){
-            return Mono.<Void>error(new Error("This payment whith number" + Number+ " do not exists"));
+            return Mono.<Void>error(new Error("This payment number" + Number+ " do not exists"));
         }
     }
     public Mono<Payment> saveTopic(Payment dataPayment){
